@@ -1,21 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guitar-Piano Visualizer</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ToneTally</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
-    <h1>Interactive Guitar & Piano</h1>
-
-    <div id="piano-roll">
-        </div>
-
-    <div id="fretboard">
-        </div>
-
-    <script src="script.js"></script>
+  <h1>ToneTally</h1>
+  <input type="file" id="midiFileInput" accept=".mid,.midi"/>
+  <div id="noteHistogram"></div>
+  <label for="modeSelect">Select Mode:</label>
+  <select id="modeSelect"></select>
+  <script src="lib/MidiPlayer.min.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>

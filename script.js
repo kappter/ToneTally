@@ -1,33 +1,49 @@
-document.addEventListener('DOMContentLoaded', () => {
-    fetch('notes.json')
-        .then(response => response.json())
-        .then(notesData => {
-            console.log('Notes loaded:', notesData);
-            
-            // Now, let's build the UI based on this data.
-            buildPianoRoll(notesData);
-            buildFretboard(notesData);
+fetch('data/modes.json')
+  .then(res => res.json())
+  .then(modes => {
+    const select = document.getElementById('modeSelect');
+    for (let mode in modes) {
+      const opt = document.createElement('option');
+      opt.value = mode;
+      opt.textContent = mode;
+      select.appendChild(opt);
+    }
+  });
 
-        })
-        .catch(error => console.error('Error loading notes:', error));
+document.getElementById('midiFileInput').addEventListener('change', function (e) {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function () {
+      const player = new MidiPlayer.Player(function (event) {
+        if (event.name === 'Note on') {
+          const note = event.noteName;
+          noteCounts[note] = (noteCounts[note] || 0) + 1;
+        }
+      });
+      player.loadArrayBuffer(reader.result);
+      noteCounts = {};
+      player.play();
+      setTimeout(() => {
+        drawHistogram(noteCounts);
+      }, 1000);
+    };
+    reader.readAsArrayBuffer(file);
+  }
 });
 
-function buildPianoRoll(notesData) {
-    const pianoRoll = document.getElementById('piano-roll');
-    // TODO: Create the keys dynamically here.
-    // Loop through notesData and create a div for each note.
-    // Example: notesData.forEach(note => { ... });
-    // You'll need to decide on a visual representation for white and black keys.
-    // HINT: You can use the note name (e.g., 'C4', 'C#4') to determine the key type.
-    // For now, let's just add a placeholder.
-    pianoRoll.innerHTML = '<p>Piano Roll will be built here.</p>';
-}
+let noteCounts = {};
 
-function buildFretboard(notesData) {
-    const fretboard = document.getElementById('fretboard');
-    // TODO: Create the guitar strings and frets dynamically here.
-    // This is a bit more complex. You'll need to loop through the strings,
-    // then loop through the frets for each string.
-    // The notesData.fretboardMapping can help you populate the frets with note IDs.
-    fretboard.innerHTML = '<p>Fretboard will be built here.</p>';
+function drawHistogram(counts) {
+  const container = document.getElementById('noteHistogram');
+  container.innerHTML = '';
+  for (let note in counts) {
+    const bar = document.createElement('div');
+    bar.style.height = '24px';
+    bar.style.width = counts[note] * 10 + 'px';
+    bar.style.background = '#3399cc';
+    bar.style.marginBottom = '4px';
+    bar.textContent = note + ' (' + counts[note] + ')';
+    container.appendChild(bar);
+  }
 }
