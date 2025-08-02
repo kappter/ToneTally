@@ -1,0 +1,6 @@
+{
+  "Dorian": ["D", "E", "F", "G", "A", "B", "C"],
+  "Aeolian": ["D", "E", "F", "G", "A", "Bb", "C"],
+  "Phrygian": ["D", "Eb", "F", "G", "A", "Bb", "C"],
+  "Harmonic Minor": ["D", "E", "F", "G", "A", "Bb", "C#"]
+}

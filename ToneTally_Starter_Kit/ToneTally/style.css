@@ -1,0 +1,9 @@
+body {
+  font-family: sans-serif;
+  margin: 2rem;
+  background-color: #f4f4f4;
+  color: #333;
+}
+#noteHistogram {
+  margin-top: 2rem;
+}
