@@ -9,7 +9,7 @@ const fretboard = { main: [], compare: [] };
 async function loadData() {
     try {
         const noteResponse = await fetch('data/notes.csv');
-        if (!noteResponse.ok) throw new Error('Failed to load notes.csv');
+        if (!noteResponse.ok) throw new Error(`Failed to load notes.csv: ${noteResponse.status}`);
         const noteText = await noteResponse.text();
         const noteLines = noteText.split('\n').slice(1);
         noteData = noteLines.map(line => {
@@ -18,16 +18,21 @@ async function loadData() {
         });
 
         const modeResponse = await fetch('data/modes.json');
-        if (!modeResponse.ok) throw new Error('Failed to load modes.json');
+        if (!modeResponse.ok) throw new Error(`Failed to load modes.json: ${modeResponse.status}`);
         modeData = await modeResponse.json();
     } catch (error) {
         console.error('Error loading data:', error);
-        alert('Failed to load data files. Please check the console and ensure data/notes.csv and data/modes.json exist.');
+        alert('Failed to load data files. Please ensure data/notes.csv and data/modes.json exist.');
+        throw error; // Prevent further execution
     }
 }
 
 function createPianoRoll(containerId) {
     const container = document.getElementById(containerId);
+    if (!container) {
+        console.error(`Container ${containerId} not found`);
+        return;
+    }
     const keyOrder = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
     const keys = [];
     for (let octave = 2; octave <= 8; octave++) {
@@ -52,6 +57,10 @@ function createPianoRoll(containerId) {
 
 function createFretboard(containerId) {
     const container = document.getElementById(containerId);
+    if (!container) {
+        console.error(`Container ${containerId} not found`);
+        return;
+    }
     const frets = [];
     for (let string = 0; string < 6; string++) {
         const stringDiv = document.createElement('div');
@@ -94,12 +103,16 @@ function playNoteAndHighlight(note, containerId) {
     updateInfo(note, noteInfo.frequency);
     clearHighlights(containerId);
     const panel = containerId.split('-')[0];
+    if (!pianoKeys[panel] || !fretboard[panel]) {
+        console.error(`Panel ${panel} not initialized`);
+        return;
+    }
     pianoKeys[panel].forEach(key => {
         if (key.dataset.note === note) key.classList.add('active');
     });
     noteInfo.strings.forEach((fret, string) => {
         if (fret !== '-') {
-            fretboard[panel][string][parseInt(fret)].classList.add('active');
+            fretboard[panel][string][parseInt(fret)]?.classList.add('active');
         }
     });
 }
@@ -113,6 +126,10 @@ function playFretAndHighlight(string, fret, containerId) {
     updateInfo(note, noteInfo.frequency);
     clearHighlights(containerId);
     const panel = containerId.split('-')[0];
+    if (!pianoKeys[panel] || !fretboard[panel]) {
+        console.error(`Panel ${panel} not initialized`);
+        return;
+    }
     fretboard[panel][string][fret].classList.add('active');
     pianoKeys[panel].forEach(key => {
         if (key.dataset.note === note) key.classList.add('active');
@@ -144,6 +161,10 @@ function stopSound() {
 
 function clearHighlights(containerId) {
     const panel = containerId.split('-')[0];
+    if (!pianoKeys[panel] || !fretboard[panel]) {
+        console.error(`Panel ${panel} not initialized`);
+        return;
+    }
     pianoKeys[panel].forEach(key => key.classList.remove('active'));
     fretboard[panel].forEach(string => string.forEach(fret => fret.classList.remove('active')));
 }
@@ -159,6 +180,10 @@ function applyModeFilter(mode, panelId) {
         return;
     }
     const panel = panelId.split('-')[0];
+    if (!pianoKeys[panel] || !fretboard[panel]) {
+        console.error(`Panel ${panel} not initialized`);
+        return;
+    }
     clearHighlights(panelId);
     const notesInMode = modeData.modes[mode].map(note => 
         noteData.filter(n => n.note.startsWith(note)).map(n => n.note)
@@ -185,36 +210,40 @@ async function analyzeSong() {
     const file = document.getElementById('song-file').files[0];
     if (!file) return;
     const noteCounts = {};
-    if (file.name.endsWith('.csv')) {
-        const text = await file.text();
-        const lines = text.split('\n').slice(1);
-        lines.forEach(line => {
-            const [note] = line.split(',');
-            if (note) noteCounts[note] = (noteCounts[note] || 0) + 1;
-        });
-    } else if (file.name.endsWith('.mid')) {
-        try {
+    try {
+        if (file.name.endsWith('.csv')) {
+            const text = await file.text();
+            const lines = text.split('\n').slice(1);
+            lines.forEach(line => {
+                const [note] = line.split(',');
+                if (note) noteCounts[note] = (noteCounts[note] || 0) + 1;
+            });
+        } else if (file.name.endsWith('.mid')) {
             const midi = await Tone.Midi.fromUrl(URL.createObjectURL(file));
             midi.tracks.forEach(track => {
                 track.notes.forEach(note => {
                     noteCounts[note.name] = (noteCounts[note.name] || 0) + 1;
                 });
             });
-        } catch (error) {
-            console.error('Error parsing MIDI:', error);
-            alert('Failed to parse MIDI file. Please ensure it’s valid.');
         }
+        displayNoteTally(noteCounts, 'main-note-tally');
+        const compareMode = document.getElementById('mode-select').value;
+        const compareNotes = Object.keys(noteCounts).filter(note => 
+            modeData.modes[compareMode]?.includes(note.replace(/[0-8]/, ''))
+        ).reduce((acc, note) => ({ ...acc, [note]: noteCounts[note] }), {});
+        displayNoteTally(compareNotes, 'compare-note-tally');
+    } catch (error) {
+        console.error('Error parsing file:', error);
+        alert('Failed to parse file. Please ensure it’s a valid CSV or MIDI.');
     }
-    displayNoteTally(noteCounts, 'main-note-tally');
-    const compareMode = document.getElementById('mode-select').value;
-    const compareNotes = Object.keys(noteCounts).filter(note => 
-        modeData.modes[compareMode]?.includes(note.replace(/[0-8]/, ''))
-    ).reduce((acc, note) => ({ ...acc, [note]: noteCounts[note] }), {});
-    displayNoteTally(compareNotes, 'compare-note-tally');
 }
 
 function displayNoteTally(counts, elementId) {
     const container = document.getElementById(elementId);
+    if (!container) {
+        console.error(`Container ${elementId} not found`);
+        return;
+    }
     container.innerHTML = '<h4>Note Frequencies</h4>';
     const ul = document.createElement('ul');
     Object.entries(counts).forEach(([note, count]) => {
@@ -231,13 +260,17 @@ document.getElementById('mode-select').addEventListener('change', (e) => {
 });
 
 async function init() {
-    await loadData();
-    createPianoRoll('main-piano');
-    createFretboard('main-fretboard');
-    createPianoRoll('compare-piano');
-    createFretboard('compare-fretboard');
-    applyModeFilter('D_Aeolian', 'main-piano');
-    applyModeFilter('D_Aeolian', 'compare-piano');
+    try {
+        await loadData();
+        createPianoRoll('main-piano');
+        createFretboard('main-fretboard');
+        createPianoRoll('compare-piano');
+        createFretboard('compare-fretboard');
+        applyModeFilter('D_Aeolian', 'main-piano');
+        applyModeFilter('D_Aeolian', 'compare-piano');
+    } catch (error) {
+        console.error('Initialization failed:', error);
+    }
 }
 
 init();
