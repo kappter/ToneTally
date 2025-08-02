@@ -1,4 +1,4 @@
-const ctx = new (window.AudioContext || window.webkitAudioContext)();
+let ctx = null; // Lazy initialization
 let oscillator = null;
 let noteData = [];
 let modeData = {};
@@ -7,16 +7,23 @@ const pianoKeys = { main: [], compare: [] };
 const fretboard = { main: [], compare: [] };
 
 async function loadData() {
-    const noteResponse = await fetch('data/notes.csv');
-    const noteText = await noteResponse.text();
-    const noteLines = noteText.split('\n').slice(1);
-    noteData = noteLines.map(line => {
-        const [note, frequency, ...strings] = line.split(',');
-        return { note, frequency: parseFloat(frequency), strings };
-    });
+    try {
+        const noteResponse = await fetch('data/notes.csv');
+        if (!noteResponse.ok) throw new Error('Failed to load notes.csv');
+        const noteText = await noteResponse.text();
+        const noteLines = noteText.split('\n').slice(1);
+        noteData = noteLines.map(line => {
+            const [note, frequency, ...strings] = line.split(',');
+            return { note, frequency: parseFloat(frequency), strings };
+        });
 
-    const modeResponse = await fetch('data/modes.json');
-    modeData = await modeResponse.json();
+        const modeResponse = await fetch('data/modes.json');
+        if (!modeResponse.ok) throw new Error('Failed to load modes.json');
+        modeData = await modeResponse.json();
+    } catch (error) {
+        console.error('Error loading data:', error);
+        alert('Failed to load data files. Please check the console and ensure data/notes.csv and data/modes.json exist.');
+    }
 }
 
 function createPianoRoll(containerId) {
@@ -81,7 +88,6 @@ function getNoteForFret(string, fret) {
 }
 
 function playNoteAndHighlight(note, containerId) {
-    stopSound();
     const noteInfo = noteData.find(n => n.note === note);
     if (!noteInfo) return;
     playSound(noteInfo.frequency);
@@ -99,7 +105,6 @@ function playNoteAndHighlight(note, containerId) {
 }
 
 function playFretAndHighlight(string, fret, containerId) {
-    stopSound();
     const note = getNoteForFret(string, fret);
     if (note === '-') return;
     const noteInfo = noteData.find(n => n.note === note);
@@ -115,6 +120,13 @@ function playFretAndHighlight(string, fret, containerId) {
 }
 
 function playSound(frequency) {
+    if (!ctx) {
+        ctx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (ctx.state === 'suspended') {
+        ctx.resume().then(() => console.log('AudioContext resumed'));
+    }
+    stopSound();
     oscillator = ctx.createOscillator();
     oscillator.type = 'sine';
     oscillator.frequency.setValueAtTime(frequency, ctx.currentTime);
@@ -142,9 +154,13 @@ function updateInfo(note, frequency) {
 }
 
 function applyModeFilter(mode, panelId) {
+    if (!modeData.modes || !modeData.modes[mode]) {
+        console.error(`Mode ${mode} not found in modeData`);
+        return;
+    }
     const panel = panelId.split('-')[0];
     clearHighlights(panelId);
-    const notesInMode = modeData.modes[mode]?.map(note => 
+    const notesInMode = modeData.modes[mode].map(note => 
         noteData.filter(n => n.note.startsWith(note)).map(n => n.note)
     ).flat() || [];
     pianoKeys[panel].forEach(key => {
@@ -177,12 +193,17 @@ async function analyzeSong() {
             if (note) noteCounts[note] = (noteCounts[note] || 0) + 1;
         });
     } else if (file.name.endsWith('.mid')) {
-        const midi = await Tone.Midi.fromUrl(URL.createObjectURL(file));
-        midi.tracks.forEach(track => {
-            track.notes.forEach(note => {
-                noteCounts[note.name] = (noteCounts[note.name] || 0) + 1;
+        try {
+            const midi = await Tone.Midi.fromUrl(URL.createObjectURL(file));
+            midi.tracks.forEach(track => {
+                track.notes.forEach(note => {
+                    noteCounts[note.name] = (noteCounts[note.name] || 0) + 1;
+                });
             });
-        });
+        } catch (error) {
+            console.error('Error parsing MIDI:', error);
+            alert('Failed to parse MIDI file. Please ensure it’s valid.');
+        }
     }
     displayNoteTally(noteCounts, 'main-note-tally');
     const compareMode = document.getElementById('mode-select').value;
