@@ -1,21 +1,49 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ToneTally Phase 3</title>
-  <style>
-    body { font-family: sans-serif; padding: 20px; }
-    canvas { border: 1px solid #ccc; display: block; margin-top: 20px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToneTally - Note Visualizer</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="images/kjklogo.png">
 </head>
 <body>
-  <h1>ToneTally Phase 3</h1>
-  <input type="file" id="midiUpload" accept=".mid" />
-  <canvas id="pianoRoll" width="1000" height="400"></canvas>
-  <script src="https://cdn.jsdelivr.net/npm/@tonejs/midi"></script>
-  <script src="https://cdn.jsdelivr.net/npm/tone"></script>
-  <script src="main.js"></script>
+    <header>
+        <a href="#" class="logo"><img src="images/kjklogo.png" alt="Home"></a>
+        <h1>ToneTally</h1>
+    </header>
+    <div id="filters">
+        <label for="mode-select">Select Mode:</label>
+        <select id="mode-select">
+            <option value="D_Aeolian">D Aeolian (Natural Minor)</option>
+            <option value="D_Dorian">D Dorian</option>
+            <option value="C_Ionian">C Ionian (Major)</option>
+            <option value="D_Harmonic_Minor">D Harmonic Minor</option>
+        </select>
+    </div>
+    <div id="comparison-panels">
+        <div id="panel-main">
+            <h3>Toccata and Fugue (D Minor)</h3>
+            <div id="main-piano" class="piano-container"></div>
+            <div id="main-fretboard" class="guitar-fretboard"></div>
+            <div id="main-note-tally"></div>
+        </div>
+        <div id="panel-compare">
+            <h3>Comparison Mode: <span id="compare-mode">Select a mode</span></h3>
+            <div id="compare-piano" class="piano-container"></div>
+            <div id="compare-fretboard" class="guitar-fretboard"></div>
+            <div id="compare-note-tally"></div>
+        </div>
+    </div>
+    <div id="song-upload">
+        <input type="file" id="song-file" accept=".csv,.mid">
+        <button onclick="analyzeSong()">Analyze Song</button>
+    </div>
+    <div id="info-panel">
+        <p id="note-info">Select a note to see details</p>
+        <p id="frequency-info"></p>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/tone@14.7.77/build/Tone.min.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
