@@ -1,36 +1,21 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ToneTally - Phase 2</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ToneTally Phase 3</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    canvas { border: 1px solid #ccc; display: block; margin-top: 20px; }
+  </style>
 </head>
 <body>
-  <h1>ToneTally</h1>
-
-  <input type="file" id="midiFileInput" accept=".mid,.midi"/>
-  <label for="modeSelect">Select Mode:</label>
-  <select id="modeSelect"></select>
-
-  <div id="panels">
-    <div id="pianoPanel">
-      <h2>Piano Keyboard</h2>
-      <div id="pianoKeys"></div>
-    </div>
-
-    <div id="fretboardPanel">
-      <h2>Guitar Fretboard</h2>
-      <div id="fretboard"></div>
-    </div>
-
-    <div id="noteHistogramPanel">
-      <h2>Note Frequency Histogram</h2>
-      <div id="noteHistogram"></div>
-    </div>
-  </div>
-
-  <script src="lib/MidiPlayer.min.js"></script>
-  <script src="script.js"></script>
+  <h1>ToneTally Phase 3</h1>
+  <input type="file" id="midiUpload" accept=".mid" />
+  <canvas id="pianoRoll" width="1000" height="400"></canvas>
+  <script src="https://cdn.jsdelivr.net/npm/@tonejs/midi"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tone"></script>
+  <script src="main.js"></script>
 </body>
 </html>
