@@ -33,6 +33,10 @@ function createPianoRoll(containerId) {
         console.error(`Container ${containerId} not found`);
         return;
     }
+    if (!noteData.length) {
+        console.error('noteData is empty; ensure notes.csv is loaded');
+        return;
+    }
     const keyOrder = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
     const keys = [];
     for (let octave = 2; octave <= 8; octave++) {
@@ -59,6 +63,10 @@ function createFretboard(containerId) {
     const container = document.getElementById(containerId);
     if (!container) {
         console.error(`Container ${containerId} not found`);
+        return;
+    }
+    if (!noteData.length) {
+        console.error('noteData is empty; ensure notes.csv is loaded');
         return;
     }
     const frets = [];
@@ -103,16 +111,16 @@ function playNoteAndHighlight(note, containerId) {
     updateInfo(note, noteInfo.frequency);
     clearHighlights(containerId);
     const panel = containerId.split('-')[0];
-    if (!pianoKeys[panel] || !fretboard[panel]) {
-        console.error(`Panel ${panel} not initialized`);
+    if (!pianoKeys[panel] || !pianoKeys[panel].length || !fretboard[panel] || !fretboard[panel].length) {
+        console.error(`Panel ${panel} not initialized or empty`);
         return;
     }
     pianoKeys[panel].forEach(key => {
         if (key.dataset.note === note) key.classList.add('active');
     });
     noteInfo.strings.forEach((fret, string) => {
-        if (fret !== '-') {
-            fretboard[panel][string][parseInt(fret)]?.classList.add('active');
+        if (fret !== '-' && fretboard[panel][string] && fretboard[panel][string][parseInt(fret)]) {
+            fretboard[panel][string][parseInt(fret)].classList.add('active');
         }
     });
 }
@@ -126,8 +134,8 @@ function playFretAndHighlight(string, fret, containerId) {
     updateInfo(note, noteInfo.frequency);
     clearHighlights(containerId);
     const panel = containerId.split('-')[0];
-    if (!pianoKeys[panel] || !fretboard[panel]) {
-        console.error(`Panel ${panel} not initialized`);
+    if (!pianoKeys[panel] || !pianoKeys[panel].length || !fretboard[panel] || !fretboard[panel].length) {
+        console.error(`Panel ${panel} not initialized or empty`);
         return;
     }
     fretboard[panel][string][fret].classList.add('active');
@@ -161,8 +169,8 @@ function stopSound() {
 
 function clearHighlights(containerId) {
     const panel = containerId.split('-')[0];
-    if (!pianoKeys[panel] || !fretboard[panel]) {
-        console.error(`Panel ${panel} not initialized`);
+    if (!pianoKeys[panel] || !pianoKeys[panel].length || !fretboard[panel] || !fretboard[panel].length) {
+        console.error(`Panel ${panel} not initialized or empty`);
         return;
     }
     pianoKeys[panel].forEach(key => key.classList.remove('active'));
@@ -180,8 +188,8 @@ function applyModeFilter(mode, panelId) {
         return;
     }
     const panel = panelId.split('-')[0];
-    if (!pianoKeys[panel] || !fretboard[panel]) {
-        console.error(`Panel ${panel} not initialized`);
+    if (!pianoKeys[panel] || !pianoKeys[panel].length || !fretboard[panel] || !fretboard[panel].length) {
+        console.error(`Panel ${panel} not initialized or empty`);
         return;
     }
     clearHighlights(panelId);
@@ -262,6 +270,10 @@ document.getElementById('mode-select').addEventListener('change', (e) => {
 async function init() {
     try {
         await loadData();
+        if (!noteData.length) {
+            console.error('noteData not loaded; aborting initialization');
+            return;
+        }
         createPianoRoll('main-piano');
         createFretboard('main-fretboard');
         createPianoRoll('compare-piano');
