@@ -3,15 +3,33 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ToneTally</title>
+  <title>ToneTally - Phase 2</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <h1>ToneTally</h1>
+
   <input type="file" id="midiFileInput" accept=".mid,.midi"/>
-  <div id="noteHistogram"></div>
   <label for="modeSelect">Select Mode:</label>
   <select id="modeSelect"></select>
+
+  <div id="panels">
+    <div id="pianoPanel">
+      <h2>Piano Keyboard</h2>
+      <div id="pianoKeys"></div>
+    </div>
+
+    <div id="fretboardPanel">
+      <h2>Guitar Fretboard</h2>
+      <div id="fretboard"></div>
+    </div>
+
+    <div id="noteHistogramPanel">
+      <h2>Note Frequency Histogram</h2>
+      <div id="noteHistogram"></div>
+    </div>
+  </div>
+
   <script src="lib/MidiPlayer.min.js"></script>
   <script src="script.js"></script>
 </body>
