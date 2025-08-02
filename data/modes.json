@@ -1,6 +1,8 @@
 {
-  "Dorian": ["D", "E", "F", "G", "A", "B", "C"],
-  "Aeolian": ["D", "E", "F", "G", "A", "Bb", "C"],
-  "Phrygian": ["D", "Eb", "F", "G", "A", "Bb", "C"],
-  "Harmonic Minor": ["D", "E", "F", "G", "A", "Bb", "C#"]
+  "modes": {
+    "D_Aeolian": ["D", "E", "F", "G", "A", "Bb", "C"],
+    "D_Dorian": ["D", "E", "F", "G", "A", "B", "C"],
+    "C_Ionian": ["C", "D", "E", "F", "G", "A", "B"],
+    "D_Harmonic_Minor": ["D", "E", "F", "G", "A", "Bb", "C#"]
+  }
 }
