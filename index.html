@@ -73,6 +73,168 @@
             transform: translateY(-2px);
         }
 
+        .guitar-fretboard {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .fretboard {
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(90deg, #8B4513 0%, #D2B48C 10%, #D2B48C 90%, #8B4513 100%);
+            border-radius: 10px;
+            padding: 20px;
+            overflow-x: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .string {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            position: relative;
+        }
+
+        .string::before {
+            content: '';
+            position: absolute;
+            left: 60px;
+            right: 10px;
+            height: 2px;
+            background: linear-gradient(90deg, #C0C0C0, #808080);
+            z-index: 1;
+            border-radius: 1px;
+        }
+
+        .string:nth-child(1)::before { height: 1px; background: linear-gradient(90deg, #E6E6FA, #C0C0C0); }
+        .string:nth-child(2)::before { height: 1.5px; background: linear-gradient(90deg, #E0E0E0, #B0B0B0); }
+        .string:nth-child(6)::before { height: 3px; background: linear-gradient(90deg, #A0A0A0, #606060); }
+
+        .string-label {
+            width: 50px;
+            text-align: center;
+            font-weight: bold;
+            color: #fff;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 5px;
+            padding: 5px;
+            z-index: 2;
+            font-size: 14px;
+        }
+
+        .fret-container {
+            display: flex;
+            flex: 1;
+            position: relative;
+            z-index: 2;
+        }
+
+        .fret {
+            width: 60px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            border-right: 3px solid #654321;
+        }
+
+        .fret:first-child {
+            border-left: 5px solid #2F4F4F;
+            width: 55px;
+        }
+
+        .fret-marker {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #FFD700;
+            border-radius: 50%;
+            border: 2px solid #DAA520;
+        }
+
+        .fret:nth-child(3) .fret-marker,
+        .fret:nth-child(5) .fret-marker,
+        .fret:nth-child(7) .fret-marker,
+        .fret:nth-child(9) .fret-marker {
+            display: block;
+        }
+
+        .fret:nth-child(12) .fret-marker {
+            width: 6px;
+            height: 6px;
+            top: 5px;
+        }
+
+        .fret:nth-child(12)::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #FFD700;
+            border-radius: 50%;
+            border: 2px solid #DAA520;
+            bottom: 5px;
+        }
+
+        .note-dot {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+            color: #fff;
+            position: relative;
+            z-index: 3;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(5px);
+        }
+
+        .note-frequency-1 { background: rgba(78, 205, 196, 0.8); }
+        .note-frequency-2 { background: rgba(69, 183, 209, 0.8); }
+        .note-frequency-3 { background: rgba(255, 107, 107, 0.8); }
+        .note-frequency-4 { background: rgba(255, 159, 67, 0.8); }
+        .note-frequency-5 { background: rgba(156, 136, 255, 0.8); }
+
+        .fret-numbers {
+            display: flex;
+            margin-bottom: 10px;
+            padding-left: 60px;
+        }
+
+        .fret-number {
+            width: 60px;
+            text-align: center;
+            font-size: 12px;
+            color: #ccc;
+            font-weight: bold;
+        }
+
+        .fret-number:first-child {
+            width: 55px;
+        }
+
+        .guitar-legend {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+        }
+
         .analysis-container {
             display: none;
             background: rgba(255, 255, 255, 0.05);
@@ -80,6 +242,175 @@
             border-radius: 15px;
             padding: 30px;
             margin-top: 30px;
+        }
+
+        .guitar-fretboard {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .fretboard {
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(90deg, #8B4513 0%, #D2B48C 10%, #D2B48C 90%, #8B4513 100%);
+            border-radius: 10px;
+            padding: 20px;
+            overflow-x: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .string {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            position: relative;
+        }
+
+        .string::before {
+            content: '';
+            position: absolute;
+            left: 60px;
+            right: 10px;
+            height: 2px;
+            background: linear-gradient(90deg, #C0C0C0, #808080);
+            z-index: 1;
+            border-radius: 1px;
+        }
+
+        .string:nth-child(1)::before { height: 1px; background: linear-gradient(90deg, #E6E6FA, #C0C0C0); }
+        .string:nth-child(2)::before { height: 1.5px; background: linear-gradient(90deg, #E0E0E0, #B0B0B0); }
+        .string:nth-child(6)::before { height: 3px; background: linear-gradient(90deg, #A0A0A0, #606060); }
+
+        .string-label {
+            width: 50px;
+            text-align: center;
+            font-weight: bold;
+            color: #fff;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 5px;
+            padding: 5px;
+            z-index: 2;
+            font-size: 14px;
+        }
+
+        .fret-container {
+            display: flex;
+            flex: 1;
+            position: relative;
+            z-index: 2;
+        }
+
+        .fret {
+            width: 60px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            border-right: 3px solid #654321;
+        }
+
+        .fret:first-child {
+            border-left: 5px solid #2F4F4F;
+            width: 55px;
+        }
+
+        .fret-marker {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #FFD700;
+            border-radius: 50%;
+            border: 2px solid #DAA520;
+        }
+
+        .fret:nth-child(3) .fret-marker,
+        .fret:nth-child(5) .fret-marker,
+        .fret:nth-child(7) .fret-marker,
+        .fret:nth-child(9) .fret-marker {
+            display: block;
+        }
+
+        .fret:nth-child(12) .fret-marker {
+            width: 6px;
+            height: 6px;
+            top: 5px;
+        }
+
+        .fret:nth-child(12)::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #FFD700;
+            border-radius: 50%;
+            border: 2px solid #DAA520;
+            bottom: 5px;
+        }
+
+        .note-dot {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+            color: #fff;
+            position: relative;
+            z-index: 3;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(5px);
+        }
+
+        .note-frequency-1 { background: rgba(78, 205, 196, 0.8); }
+        .note-frequency-2 { background: rgba(69, 183, 209, 0.8); }
+        .note-frequency-3 { background: rgba(255, 107, 107, 0.8); }
+        .note-frequency-4 { background: rgba(255, 159, 67, 0.8); }
+        .note-frequency-5 { background: rgba(156, 136, 255, 0.8); }
+
+        .fret-numbers {
+            display: flex;
+            margin-bottom: 10px;
+            padding-left: 60px;
+        }
+
+        .fret-number {
+            width: 60px;
+            text-align: center;
+            font-size: 12px;
+            color: #ccc;
+            font-weight: bold;
+        }
+
+        .fret-number:first-child {
+            width: 55px;
+        }
+
+        .guitar-legend {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+        }
+
+        .legend-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .piano-roll {
@@ -294,6 +625,11 @@
                     <div id="pianoVisualization"></div>
                 </div>
 
+                <div class="guitar-fretboard" id="guitarFretboard">
+                    <h3>Guitar Fretboard Note Distribution</h3>
+                    <div id="fretboardVisualization"></div>
+                </div>
+
                 <div class="stats" id="statsContainer"></div>
 
                 <div class="key-analysis" id="keyAnalysis" style="margin-bottom: 20px;">
@@ -310,6 +646,10 @@
     </div>
 
     <script>
+        // Guitar standard tuning (from low to high)
+        const guitarTuning = ['E', 'A', 'D', 'G', 'B', 'E'];
+        const tuningMidi = [40, 45, 50, 55, 59, 64]; // MIDI note numbers for standard tuning
+
         // Musical scales and modes
         const modes = {
             'Ionian (Major)': [0, 2, 4, 5, 7, 9, 11],
@@ -518,6 +858,7 @@
 
         function createVisualization() {
             createPianoRoll();
+            createGuitarFretboard();
             createStats();
             createKeyAnalysisDisplay();
             createNoteList();
@@ -560,6 +901,103 @@
             }
             
             html += '</div></div>';
+            container.innerHTML = html;
+        }
+
+        function createGuitarFretboard() {
+            const container = document.getElementById('fretboardVisualization');
+            
+            // Get note classes and calculate frequency tiers
+            const noteClasses = {};
+            Object.entries(noteFrequencies).forEach(([note, freq]) => {
+                const noteClass = note.replace(/\d+$/, '');
+                noteClasses[noteClass] = (noteClasses[noteClass] || 0) + freq;
+            });
+
+            const maxFreq = Math.max(...Object.values(noteClasses));
+            const getFrequencyTier = (freq) => {
+                if (freq === 0) return 0;
+                const ratio = freq / maxFreq;
+                if (ratio >= 0.8) return 5;
+                if (ratio >= 0.6) return 4;
+                if (ratio >= 0.4) return 3;
+                if (ratio >= 0.2) return 2;
+                return 1;
+            };
+
+            let html = '<div class="fretboard">';
+            
+            // Fret numbers
+            html += '<div class="fret-numbers">';
+            for (let fret = 0; fret <= 12; fret++) {
+                html += `<div class="fret-number">${fret}</div>`;
+            }
+            html += '</div>';
+
+            // Create strings (high to low for visual consistency)
+            for (let stringIndex = 5; stringIndex >= 0; stringIndex--) {
+                const stringNote = guitarTuning[stringIndex];
+                const stringMidi = tuningMidi[stringIndex];
+                
+                html += `<div class="string">`;
+                html += `<div class="string-label">${stringNote}</div>`;
+                html += `<div class="fret-container">`;
+                
+                // Create frets 0-12
+                for (let fret = 0; fret <= 12; fret++) {
+                    const midiNote = stringMidi + fret;
+                    const noteName = getNoteName(midiNote).replace(/\d+$/, '');
+                    const frequency = noteClasses[noteName] || 0;
+                    const tier = getFrequencyTier(frequency);
+                    
+                    html += `<div class="fret">`;
+                    
+                    // Add fret markers (3rd, 5th, 7th, 9th, 12th frets)
+                    if ([3, 5, 7, 9].includes(fret)) {
+                        html += `<div class="fret-marker"></div>`;
+                    } else if (fret === 12) {
+                        html += `<div class="fret-marker"></div>`;
+                    }
+                    
+                    // Add note dot if the note appears in the piece
+                    if (frequency > 0) {
+                        html += `<div class="note-dot note-frequency-${tier}">${noteName}</div>`;
+                    }
+                    
+                    html += `</div>`;
+                }
+                
+                html += `</div></div>`;
+            }
+            
+            html += '</div>';
+            
+            // Add legend
+            html += `
+                <div class="guitar-legend">
+                    <div class="legend-item">
+                        <div class="legend-dot note-frequency-5"></div>
+                        <span>Most Frequent</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot note-frequency-4"></div>
+                        <span>Very Frequent</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot note-frequency-3"></div>
+                        <span>Frequent</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot note-frequency-2"></div>
+                        <span>Moderate</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot note-frequency-1"></div>
+                        <span>Less Frequent</span>
+                    </div>
+                </div>
+            `;
+            
             container.innerHTML = html;
         }
 
